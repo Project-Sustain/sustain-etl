@@ -1,6 +1,9 @@
 # sustain-etl
 ## overview
-a repository to perform ETL processes for the sustain project.
+script-based, dependency driven data management application.
+
+## usage
+TODO
 
 ## todo
 - everything

@@ -32,6 +32,7 @@ def task_stage_region_county():
     formatted_file = os.getenv('SUSTAIN_DATA_DIR') \
         + '/tmp/county-formatted.json'
 
+    mongo_binary = os.getenv('SUSTAIN_MONGODB_BIN_DIR') + '/mongo'
     mongoimport_binary = \
         os.getenv('SUSTAIN_MONGODB_BIN_DIR') + '/mongoimport'
 
@@ -53,15 +54,22 @@ def task_stage_region_county():
             'cat ' + json_file + ' | jq \'' + jq_format_string
                 + '\' > ' + formatted_file, 
             # mongo import
-            mongoimport_binary + ' --host=' 
-                + os.getenv('SUSTAIN_MONGODB_CONNECTION_STR') 
+            mongoimport_binary
+                + ' --host=' + os.getenv('SUSTAIN_MONGODB_HOST')
+                + ' --port=' + os.getenv('SUSTAIN_MONGODB_PORT')
                 + ' --db=' + os.getenv('SUSTAIN_MONGODB_DATABASE')
                 + ' --collection=region_county --type=json '
-                + formatted_file,
+                + formatted_file + ' >> %(targets)s 2>&1',
+            # create 2dsphere index
+            mongo_binary + ' ' + os.getenv('SUSTAIN_MONGODB_DATABASE') 
+                + ' --host=' + os.getenv('SUSTAIN_MONGODB_HOST')
+                + ' --port=' + os.getenv('SUSTAIN_MONGODB_PORT')
+                + ' --eval "db.region_county.createIndex({geometry:\\\"2dsphere\\\"})"'
+                +  ' >> %(targets)s 2>&1',
             # cleanup
             'rm ' + json_file + ' ' + formatted_file,
             # flag target complete
-            'echo "complete" > %(targets)s'],
+            'echo "completed: $(date)" > %(targets)s'],
         'targets' : ['logs/stage.region.county'],
         'uptodate' : [True],
         'clean' : True
@@ -75,6 +83,7 @@ def task_stage_region_state():
     formatted_file = os.getenv('SUSTAIN_DATA_DIR') \
         + '/tmp/state-formatted.json'
 
+    mongo_binary = os.getenv('SUSTAIN_MONGODB_BIN_DIR') + '/mongo'
     mongoimport_binary = \
         os.getenv('SUSTAIN_MONGODB_BIN_DIR') + '/mongoimport'
 
@@ -95,15 +104,22 @@ def task_stage_region_state():
             'cat ' + json_file + ' | jq \'' + jq_format_string
                 + '\' > ' + formatted_file, 
             # mongo import
-            mongoimport_binary + ' --host=' 
-                + os.getenv('SUSTAIN_MONGODB_CONNECTION_STR') 
+            mongoimport_binary
+                + ' --host=' + os.getenv('SUSTAIN_MONGODB_HOST')
+                + ' --port=' + os.getenv('SUSTAIN_MONGODB_PORT')
                 + ' --db=' + os.getenv('SUSTAIN_MONGODB_DATABASE')
                 + ' --collection=region_state --type=json '
-                + formatted_file,
+                + formatted_file + ' >> %(targets)s 2>&1',
+            # create 2dsphere index
+            mongo_binary + ' ' + os.getenv('SUSTAIN_MONGODB_DATABASE') 
+                + ' --host=' + os.getenv('SUSTAIN_MONGODB_HOST')
+                + ' --port=' + os.getenv('SUSTAIN_MONGODB_PORT')
+                + ' --eval "db.region_state.createIndex({geometry:\\\"2dsphere\\\"})"'
+                +  ' >> %(targets)s 2>&1',
             # cleanup
             'rm ' + json_file + ' ' + formatted_file,
             # flag target complete
-            'echo "complete" > %(targets)s'],
+            'echo "completed: $(date)" >> %(targets)s'],
         'targets' : ['logs/stage.region.state'],
         'uptodate' : [True],
         'clean' : True
