@@ -1,2 +1,0 @@
-rootProject.name = 'sustain-etl'
-include('ncproj', 'shared')
