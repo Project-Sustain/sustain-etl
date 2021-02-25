@@ -19,7 +19,7 @@ def task_stage_region():
     return {
         'file_dep' : ['logs/stage.region.county',
             'logs/stage.region.state'],
-        'actions' : ['echo "complete" > %(targets)s'],
+        'actions' : ['echo "completed: $(date)" >> %(targets)s'],
         'targets' : ['logs/stage.region'],
         'clean' : True
     }
