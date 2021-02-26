@@ -2,8 +2,5 @@
 ## overview
 script-based, dependency driven data management
 
-## usage
-TODO
-
 ## todo
-- everything
+- figure out invoke 'parallel execution'

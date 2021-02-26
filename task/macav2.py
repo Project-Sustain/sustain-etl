@@ -1,11 +1,22 @@
 from invoke import Collection, task
 
+import task.ncproj as ncproj
+import task.region as region
+
+@task(ncproj.compile, region.stage)
+def build(context):
+    """
+    Build macav2 data
+    """
+
+    print("hello macav2 build!")
+
 @task
 def clean(context):
-    print("Hello macav2 Clean!")
+    """
+    Clean macav2 data
+    """
 
-@task
-def build(context):
-    print("Hello macav2 Build!")
+    print("hello macav2 clean!")
 
-namespace = Collection('macav2', clean, build)
+namespace = Collection('macav2', build, clean)

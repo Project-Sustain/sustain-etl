@@ -11,3 +11,4 @@ os.environ['SUSTAIN_MONGODB_PORT'] = '27017'
 
 # set build directory
 os.environ['ETL_BUILD_DIR'] = 'impl/'
+os.environ['ETL_LOG_DIR'] = 'log/'

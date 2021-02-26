@@ -1,11 +1,29 @@
 from invoke import Collection, task
 
+import os
+
 @task
+def clone(context):
+    """
+    Clone the ncproj git repository
+    """
+
+    print("hello ncproj clone!")
+
+@task(clone)
 def update(context):
-    print("Hello ncproj Update!")
+    """
+    Update the ncproj git repository
+    """
+
+    print("hello ncproj update!")
 
 @task(update)
 def compile(context):
-    print("Hello ncproj Compile!")
+    """
+    Compile the ncproj git repository
+    """
 
-namespace = Collection('ncproj', compile)
+    print("hello ncproj compile!")
+
+namespace = Collection('ncproj', clone, update, compile)
