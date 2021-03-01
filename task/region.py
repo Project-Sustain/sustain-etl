@@ -3,8 +3,9 @@ from invoke import Collection, task
 import os
 
 """
-configuration values
+configuration variables
 """
+
 region_dir = 'region'
 
 county_shapefile = os.getenv('SUSTAIN_DATA_DIR') \
