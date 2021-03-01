@@ -12,14 +12,6 @@ def build(context):
 
     print("hello build!")
 
-@task(macav2.clean, region.clean)
-def clean(context):
-    """
-    Execute all clean tasks
-    """
-
-    print("hello clean!")
-
 @task(ncproj.compile)
 def compile(context):
     """
@@ -36,4 +28,4 @@ def stage(context):
 
     print("hello stage!")
 
-namespace = Collection('all', build, clean, compile, stage)
+namespace = Collection('all', build, compile, stage)
