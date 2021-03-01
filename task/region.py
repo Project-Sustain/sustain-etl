@@ -6,15 +6,15 @@ import os
 configuration variables
 """
 
-region_dir = 'region'
+region_dir = os.getenv('SUSTAIN_DATA_DIR') + '/region/'
 
-county_shapefile = os.getenv('SUSTAIN_DATA_DIR') \
-    + '/' + region_dir + '/tl_2010_us_county10.shp'
+county_collection = 'region_county'
+county_shapefile = region_dir + 'tl_2010_us_county10.shp'
 county_json_file = county_shapefile + '.json'
 county_formatted_file = county_json_file + '.formatted'
 
-state_shapefile = os.getenv('SUSTAIN_DATA_DIR') \
-    + '/' + region_dir + '/tl_2010_us_state10.shp'
+state_collection = 'region_state'
+state_shapefile = region_dir + '/tl_2010_us_state10.shp'
 state_json_file = state_shapefile + '.json'
 state_formatted_file = state_json_file + '.formatted'
 
@@ -39,16 +39,16 @@ def stage_county(context):
 
     # unpack shapefile
     if os.path.isfile(county_json_file):
-        print('[|] json file "' + county_json_file \
+        print('[|] json file "' + county_json_file
             + '" already exists')
     else:
         print("[+] unpacking shapefile")
-        context.run('ogr2ogr -f geoJSON ' + county_json_file \
+        context.run('ogr2ogr -f geoJSON ' + county_json_file
             + ' ' + county_shapefile)
 
     # format json
     if os.path.isfile(county_formatted_file):
-        print('[|] formatted json file "' + county_formatted_file \
+        print('[|] formatted json file "' + county_formatted_file
             + '" already exists')
     else:
         print("[+] formatting json")
@@ -69,7 +69,7 @@ def stage_county(context):
         + ' --host=' + os.getenv('SUSTAIN_MONGODB_HOST')
         + ' --port=' + os.getenv('SUSTAIN_MONGODB_PORT')
         + ' --db=' + os.getenv('SUSTAIN_MONGODB_DATABASE')
-        + ' --collection=region_county --type=json '
+        + ' --collection=' + county_collection + ' --type=json '
         + county_formatted_file)
 
     # create 2dsphere index
@@ -78,7 +78,8 @@ def stage_county(context):
         + os.getenv('SUSTAIN_MONGODB_DATABASE') 
         + ' --host=' + os.getenv('SUSTAIN_MONGODB_HOST')
         + ' --port=' + os.getenv('SUSTAIN_MONGODB_PORT')
-        + ' --eval "db.region_county.createIndex({geometry:\\\"2dsphere\\\"})"')
+        + ' --eval "db.' + county_collection + \
+            '.createIndex({geometry:\\\"2dsphere\\\"})"')
 
 county_namespace = Collection('county')
 county_namespace.add_task(clean_county, name = 'clean')
@@ -101,16 +102,16 @@ def stage_state(context):
 
     # unpack shapefile
     if os.path.isfile(state_json_file):
-        print('[|] json file "' + county_json_file \
+        print('[|] json file "' + county_json_file
             + '" already exists')
     else:
         print("[+] unpacking shapefile")
-        context.run('ogr2ogr -f geoJSON ' + state_json_file \
+        context.run('ogr2ogr -f geoJSON ' + state_json_file
             + ' ' + state_shapefile)
 
     # format json
     if os.path.isfile(state_formatted_file):
-        print('[|] formatted json file "' + state_formatted_file \
+        print('[|] formatted json file "' + state_formatted_file
             + '" already exists')
     else:
         print("[+] formatting json")
@@ -130,7 +131,7 @@ def stage_state(context):
         + ' --host=' + os.getenv('SUSTAIN_MONGODB_HOST')
         + ' --port=' + os.getenv('SUSTAIN_MONGODB_PORT')
         + ' --db=' + os.getenv('SUSTAIN_MONGODB_DATABASE')
-        + ' --collection=region_state --type=json '
+        + ' --collection=' + state_collection + ' --type=json '
         + state_formatted_file)
 
     # create 2dsphere index
@@ -139,7 +140,8 @@ def stage_state(context):
         + os.getenv('SUSTAIN_MONGODB_DATABASE') 
         + ' --host=' + os.getenv('SUSTAIN_MONGODB_HOST')
         + ' --port=' + os.getenv('SUSTAIN_MONGODB_PORT')
-        + ' --eval "db.region_state.createIndex({geometry:\\\"2dsphere\\\"})"')
+        + ' --eval "db.' + state_collection + \
+            '.createIndex({geometry:\\\"2dsphere\\\"})"')
 
 state_namespace = Collection('state')
 state_namespace.add_task(clean_state, name = 'clean')

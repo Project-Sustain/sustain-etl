@@ -30,7 +30,7 @@ def update(context):
     else:
         # clone git repository
         print('[+] cloning ncproj repository')
-        context.run('git clone https://github.com/hamersaw/ncproj ' \
+        context.run('git clone https://github.com/hamersaw/ncproj '
             + ncproj_dir)
 
 @task(update)
